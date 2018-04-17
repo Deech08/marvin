@@ -122,7 +122,7 @@ class Marvin(BaseWebView):
         if 'name' in current_session:
             name = current_session.pop('name')
 
-        request.environ['REMOTE_USER'] = None
+        #request.environ['REMOTE_USER'] = None
         config.access = 'public'
         set_session_versions(config.release)
         setGlobalSession()
@@ -172,13 +172,13 @@ class Marvin(BaseWebView):
                     user = marvindb.datadb.User(username=username)
                     user.set_password(password)
                     marvindb.session.add(user)
-        print('login', is_valid, user, feature.is_active('public'))
+        #print('login', is_valid, user, feature.is_active('public'))
         if is_valid:
             result['status'] = 1
             result['message'] = 'Login Successful!'
             current_session['name'] = user.username
             current_session['loginready'] = True
-            request.environ['REMOTE_USER'] = user.username
+            current_session['user'] = request.environ.get('REMOTE_USER', None)
             config.access = 'collab'
             setGlobalSession()
         else:

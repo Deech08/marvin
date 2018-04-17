@@ -52,7 +52,7 @@
             </div>
 
             <!-- Login / User Prefs -->
-            {% if not current_user.is_authenticated %}
+            {% if not session.user %}
                 <!-- Login -->
                 {# Login #}
                 <div class='navbar-login'>

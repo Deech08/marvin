@@ -29,15 +29,15 @@ def check_access():
     ''' Check the access mode in the session '''
 
     # check if on public server
-    public_server = request.environ.get('PUBLIC_SERVER', None) == 'True'
-    public_flag = public_server or current_app.config['FEATURE_FLAGS']['public']
-    current_app.config['FEATURE_FLAGS']['public'] = public_server
+    # public_server = request.environ.get('PUBLIC_SERVER', None) == 'True'
+    # public_flag = public_server or current_app.config['FEATURE_FLAGS']['public']
+    # current_app.config['FEATURE_FLAGS']['public'] = public_server
     public_access = config.access == 'public'
-    print('public_flag', public_flag, public_access)
+    # print('public_flag', public_flag, public_access)
 
-    if public_flag:
-        config.access = 'public'
-        return
+    # if public_flag:
+    #     config.access = 'public'
+    #     return
 
     # check for logged in status
     logged_in = current_session.get('loginready', None)
@@ -73,8 +73,11 @@ def updateGlobalSession():
         set_session_versions(config.release)
     elif 'release' not in current_session:
         current_session['release'] = config.release
-    elif feature.is_active('public'):
-        current_session['versions'] = update_allowed()
+    elif 'user' in current_session:
+        if not current_session['user']:
+            current_session['versions'] = [v for v in update_allowed() if 'MPL' not in v]
+    # elif feature.is_active('public'):
+    #     current_session['versions'] = update_allowed()
     # elif 'access' not in current_session:
     #     current_session['access'] = config.access
     # else:
