@@ -6,12 +6,12 @@
 # @Author: Brian Cherinka
 # @Date:   2016-12-08 14:24:58
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2018-02-14 11:04:11
+# @Last Modified time: 2018-04-17 17:32:26
 
 from __future__ import print_function, division, absolute_import
 from flask_classful import FlaskView
 from flask import request
-from marvin.web.web_utils import parseSession
+from marvin.web.web_utils import parseSession, update_allowed
 import marvin
 from brain.api.general import BrainGeneralRequestsView
 from marvin.api.base import arg_validate as av
@@ -32,6 +32,7 @@ class BaseWebView(FlaskView):
     def before_request(self, *args, **kwargs):
         ''' this runs before every single request '''
         self.base['error'] = None
+        self.base['versions'] = update_allowed()
         self._endpoint = request.endpoint
         self._drpver, self._dapver, self._release = parseSession()
 

@@ -38,13 +38,22 @@ def check_access():
     # if public_flag:
     #     config.access = 'public'
     #     return
+    print('checking access')
+    user = current_session['user'] = request.environ.get('REMOTE_USER', None)
 
-    # check for logged in status
-    logged_in = current_session.get('loginready', None)
-    if not logged_in and not public_access:
+    print('auth user', user, public_access)
+    if not user and not public_access:
         config.access = 'public'
-    elif logged_in is True and public_access:
+    elif user and public_access:
         config.access = 'collab'
+
+    #clear_session_versions()
+    # check for logged in status
+    # logged_in = current_session.get('loginready', None)
+    # if not logged_in and not public_access:
+    #     config.access = 'public'
+    # elif logged_in is True and public_access:
+    #     config.access = 'collab'
 
 
 def update_allowed():
@@ -61,10 +70,18 @@ def set_session_versions(version):
     current_session['drpver'] = drpver
     current_session['dapver'] = dapver
 
+def clear_session_versions():
+    ''' Clear the versions in a session '''
+    print('clearing session')
+    keys = ['versions', 'release', 'drpver', 'dapver']
+    for key in keys:
+        if key in current_session:
+            tmp = current_session.pop(key)
+
 
 def updateGlobalSession():
     ''' updates the Marvin config with the global Flask session '''
-
+    print('updating session')
     # check if mpl versions in session
     if 'versions' not in current_session:
         setGlobalSession()
@@ -73,9 +90,12 @@ def updateGlobalSession():
         set_session_versions(config.release)
     elif 'release' not in current_session:
         current_session['release'] = config.release
-    elif 'user' in current_session:
-        if not current_session['user']:
-            current_session['versions'] = [v for v in update_allowed() if 'MPL' not in v]
+    # elif 'user' in current_session:
+    #     versions = update_allowed()
+    #     if not current_session['user']:
+    #         current_session['versions'] = [v for v in versions if 'MPL' not in v]
+    #     else:
+    #         current_session['versions'] = versions
     # elif feature.is_active('public'):
     #     current_session['versions'] = update_allowed()
     # elif 'access' not in current_session:

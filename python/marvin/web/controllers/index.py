@@ -44,7 +44,7 @@ class Marvin(BaseWebView):
 
     @route('/versions/')
     def get_versions(self):
-        vers = {'sess_vers': current_session['versions'], 'config_vers': config._allowed_releases.keys(), 'access': config.access}
+        vers = {'sess_vers': current_session['versions'], 'config_vers': config._allowed_releases.keys(), 'access': config.access, 'release': config.release}
         return jsonify(result=vers)
 
     @route('/session/')
@@ -102,6 +102,7 @@ class Marvin(BaseWebView):
         ''' Global selection of the MPL/DR versions '''
         args = av.manual_parse(self, request, use_params='index')
         version = args.get('release', None)
+        print('selecting version')
         set_session_versions(version)
         drpver, dapver = config.lookUpVersions(release=version)
         out = {'status': 1, 'msg': 'Success', 'current_release': version,
