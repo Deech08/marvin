@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-12-08 14:24:58
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2018-04-17 17:32:26
+# @Last Modified time: 2018-04-17 18:22:47
 
 from __future__ import print_function, division, absolute_import
 from flask_classful import FlaskView
@@ -32,7 +32,7 @@ class BaseWebView(FlaskView):
     def before_request(self, *args, **kwargs):
         ''' this runs before every single request '''
         self.base['error'] = None
-        self.base['versions'] = update_allowed()
+        self._versions = update_allowed()
         self._endpoint = request.endpoint
         self._drpver, self._dapver, self._release = parseSession()
 
@@ -62,3 +62,4 @@ class BaseWebView(FlaskView):
         for key, val in mydict.items():
             if key in diffkeys and (key not in exclude):
                 mydict[key] = '' if isinstance(val, str) else None
+        mydict['versions'] = self._versions

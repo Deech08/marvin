@@ -42,7 +42,7 @@ def check_access():
     user = current_session['user'] = request.environ.get('REMOTE_USER', None)
 
     print('auth user', user, public_access)
-    if not user and not public_access:
+    if user == '' and not public_access:
         config.access = 'public'
     elif user and public_access:
         config.access = 'collab'

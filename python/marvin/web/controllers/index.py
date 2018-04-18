@@ -44,12 +44,13 @@ class Marvin(BaseWebView):
 
     @route('/versions/')
     def get_versions(self):
-        vers = {'sess_vers': current_session['versions'], 'config_vers': config._allowed_releases.keys(), 'access': config.access, 'release': config.release}
+        vers = {'sess_vers': current_session['versions'], 'config_vers': config._allowed_releases.keys(), 'access': config.access,
+                'release': config.release, 'base_versions': self.main}
         return jsonify(result=vers)
 
     @route('/session/')
     def get_session(self):
-        extra = {'access': config.access, 'remote_user': request.environ['REMOTE_USER']}
+        extra = {'access': config.access, 'remote_user': request.environ.get('REMOTE_USER', None)}
         return jsonify(result=dict(current_session, **extra))
 
     @route('/clear/')
