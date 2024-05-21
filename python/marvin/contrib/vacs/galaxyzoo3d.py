@@ -676,7 +676,7 @@ class GZ3DTarget(object):
 
         return None
 
-    def get_mean_spectra(self, inv=False):
+    def get_mean_spectra(self, inv=False, download_cube = False):
         '''Calculate the mean spectra inside each of the spaxel masks accounting
         for covariance following Westfall et al. 2019's method based in distance
         between spaxels.
@@ -702,18 +702,18 @@ class GZ3DTarget(object):
                 average spectra outside the center mask
         '''
         if self.mean_bar is None:
-            self.mean_bar = self._stack_spectra('bar_mask_spaxel')
+            self.mean_bar = self._stack_spectra('bar_mask_spaxel', download_cube = download_cube)
         if self.mean_spiral is None:
-            self.mean_spiral = self._stack_spectra('spiral_mask_spaxel')
+            self.mean_spiral = self._stack_spectra('spiral_mask_spaxel', download_cube = download_cube)
         if self.mean_center is None:
-            self.mean_center = self._stack_spectra('center_mask_spaxel')
+            self.mean_center = self._stack_spectra('center_mask_spaxel', download_cube = download_cube)
         if inv:
             if self.mean_not_bar is None:
-                self.mean_not_bar = self._stack_spectra('bar_mask_spaxel', inv=True)
+                self.mean_not_bar = self._stack_spectra('bar_mask_spaxel', inv=True, download_cube = download_cube)
             if self.mean_not_spiral is None:
-                self.mean_not_spiral = self._stack_spectra('spiral_mask_spaxel', inv=True)
+                self.mean_not_spiral = self._stack_spectra('spiral_mask_spaxel', inv=True, download_cube = download_cube)
             if self.mean_not_center is None:
-                self.mean_not_center = self._stack_spectra('center_mask_spaxel', inv=True)
+                self.mean_not_center = self._stack_spectra('center_mask_spaxel', inv=True, download_cube = download_cube)
 
     def _get_bpt(self, snr_min=3, oi_sf=False):
         '''Use the `bpt` module to grab the information needed to make BPT plots color coded by the GZ3D masks'''
