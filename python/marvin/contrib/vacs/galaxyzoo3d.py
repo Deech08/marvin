@@ -342,7 +342,7 @@ class GZ3DVAC(VACMixIn):
             cube = parent_object
             maps = parent_object.getMaps()
         else:
-            cube = parent_object.getCube()
+            cube = None
             maps = parent_object
 
         if not self.file_exists(self.summary_file):
@@ -577,7 +577,7 @@ class GZ3DTarget(object):
     def _get_spaxel_grid_xy(self, include_edges=False, grid_size=None):
         '''Find the spaxel grid (in image coordinates) for the images in the fits file'''
         if grid_size is None:
-            grid_size = self.cube.data['FLUX'].data.shape[1:]
+            grid_size = self.maps.spx_snr.data.shape
         one_grid = 0.5 / 0.099
         c = self.center_in_pix()
         grid_y = np.arange(grid_size[0] + include_edges) * one_grid
@@ -617,8 +617,13 @@ class GZ3DTarget(object):
         self.bar_mask_spaxel = self._get_spaxel_mask(self.bar_mask, grid_size=grid_size)
         self.other_mask_spaxel = (self.spiral_mask_spaxel == 0) & (self.bar_mask_spaxel == 0) & (self.center_mask_spaxel == 0)
 
-    def _stack_spectra(self, mask_name, inv=False):
+    def _stack_spectra(self, mask_name, inv=False, download_cube = False):
         '''Stack multiple spectra withing a spaxel mask following Westfall et al. 2019 for covariance correction factors'''
+        if download_cube:
+            self.cube = self.maps.getCube()
+        elif self.cube is None:
+            raise AttributeError("A mangacube is not loaded yet - rerun this command with 'download_cube=True' to download one!")
+
         mask = getattr(self, mask_name)
         if inv:
             mask = mask.max() - mask
